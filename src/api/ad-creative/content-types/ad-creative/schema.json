@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ad_creatives",
+  "info": {
+    "singularName": "ad-creative",
+    "pluralName": "ad-creatives",
+    "displayName": "Ad Creative",
+    "description": "Individual ads within a campaign"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": ["image", "video", "text", "carousel", "story", "banner"],
+      "required": true
+    },
+    "headline": {
+      "type": "string"
+    },
+    "body_copy": {
+      "type": "text"
+    },
+    "cta_text": {
+      "type": "string"
+    },
+    "cta_url": {
+      "type": "string"
+    },
+    "media": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": ["images", "videos", "files"]
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["draft", "review", "approved", "rejected", "live"],
+      "default": "draft",
+      "required": true,
+      "configurable": false
+    },
+    "campaign": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::campaign.campaign",
+      "inversedBy": "ad_creatives"
+    }
+  }
+}

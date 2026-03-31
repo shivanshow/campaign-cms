@@ -1,16 +1,19 @@
-import type { Core } from '@strapi/strapi';
-
-const config: Core.Config.Middlewares = [
+export default [
   'strapi::logger',
   'strapi::errors',
   'strapi::security',
-  'strapi::cors',
-  'strapi::poweredBy',
+  {
+    name: 'strapi::cors',
+    config: {
+      origin: ['*'],
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      headers: ['Content-Type', 'Authorization'],
+    },
+  },
   'strapi::query',
   'strapi::body',
   'strapi::session',
   'strapi::favicon',
   'strapi::public',
+  'global::request-logger',
 ];
-
-export default config;

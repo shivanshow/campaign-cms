@@ -1,0 +1,62 @@
+{
+  "kind": "collectionType",
+  "collectionName": "analytics_events",
+  "info": {
+    "singularName": "analytics-event",
+    "pluralName": "analytics-events",
+    "displayName": "Analytics Event",
+    "description": "Daily performance metrics per campaign"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "impressions": {
+      "type": "integer",
+      "default": 0
+    },
+    "clicks": {
+      "type": "integer",
+      "default": 0
+    },
+    "conversions": {
+      "type": "integer",
+      "default": 0
+    },
+    "spend": {
+      "type": "decimal",
+      "default": 0
+    },
+    "ctr": {
+      "type": "decimal",
+      "default": 0,
+      "private": false
+    },
+    "conversion_rate": {
+      "type": "decimal",
+      "default": 0
+    },
+    "platform": {
+      "type": "enumeration",
+      "enum": [
+        "google",
+        "meta",
+        "instagram",
+        "linkedin",
+        "twitter",
+        "youtube",
+        "other"
+      ]
+    },
+    "campaign": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::campaign.campaign",
+      "inversedBy": "analytics_events"
+    }
+  }
+}

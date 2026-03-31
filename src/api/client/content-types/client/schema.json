@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "clients",
+  "info": {
+    "singularName": "client",
+    "pluralName": "clients",
+    "displayName": "Client",
+    "description": "Brands or companies running campaigns"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "industry": {
+      "type": "enumeration",
+      "enum": [
+        "ecommerce",
+        "fmcg",
+        "technology",
+        "healthcare",
+        "finance",
+        "entertainment",
+        "education",
+        "other"
+      ],
+      "required": true
+    },
+    "website": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "email",
+      "required": true
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "campaigns": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::campaign.campaign",
+      "mappedBy": "client"
+    }
+  }
+}

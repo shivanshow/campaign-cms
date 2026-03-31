@@ -1,0 +1,88 @@
+{
+  "kind": "collectionType",
+  "collectionName": "campaigns",
+  "info": {
+    "singularName": "campaign",
+    "pluralName": "campaigns",
+    "displayName": "Campaign",
+    "description": "Core campaign entity"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["draft", "active", "paused", "completed", "cancelled"],
+      "default": "draft",
+      "required": true,
+      "configurable": false
+    },
+    "channel": {
+      "type": "enumeration",
+      "enum": [
+        "social_media",
+        "email",
+        "search",
+        "display",
+        "influencer",
+        "ooh",
+        "mixed"
+      ],
+      "required": true
+    },
+    "start_date": {
+      "type": "date",
+      "required": true
+    },
+    "end_date": {
+      "type": "date",
+      "required": true
+    },
+    "budget": {
+      "type": "decimal",
+      "required": true
+    },
+    "spent_budget": {
+      "type": "decimal",
+      "default": 0
+    },
+    "goals": {
+      "type": "text"
+    },
+    "target_audience": {
+      "type": "json"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag",
+      "mappedBy": "campaigns"
+    },
+    "client": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::client.client",
+      "inversedBy": "campaigns"
+    },
+    "ad_creatives": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::ad-creative.ad-creative",
+      "mappedBy": "campaign"
+    },
+    "analytics_events": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::analytics-event.analytics-event",
+      "mappedBy": "campaign"
+    }
+  }
+}
