@@ -1,61 +1,267 @@
-# 🚀 Getting started with Strapi
+# 🚀 Campaign Management System
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
-
-### `develop`
-
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
-
-```
-npm run develop
-# or
-yarn develop
-```
-
-### `start`
-
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
-
-```
-npm run start
-# or
-yarn start
-```
-
-### `build`
-
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
-
-```
-npm run build
-# or
-yarn build
-```
-
-## ⚙️ Deployment
-
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
-
-```
-yarn strapi deploy
-```
-
-## 📚 Learn more
-
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
-
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
-
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
+A full-featured **Campaign Management System** built with **Strapi (Node.js backend)**, designed for both technical and non-technical users.
 
 ---
 
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+## 📌 Overview
+
+This system provides a centralized platform to:
+
+- Manage campaigns across multiple channels
+- Track performance metrics and analytics
+- Organize ad creatives and clients
+- Enforce business rules like budget constraints
+- Support role-based access
+
+---
+
+## 🧱 Tech Stack
+
+- **Backend:** Strapi (Node.js)
+- **Database:** SQLite / PostgreSQL
+- **API:** REST
+- **Auth:** Role-Based Access Control (RBAC)
+
+---
+
+## 📦 Content Types
+
+### Campaign
+- title
+- status (enum)
+- channel
+- start_date
+- end_date
+- budget
+- spent_budget
+- goals
+- target_audience (JSON)
+
+---
+
+### Client
+- name
+- industry
+- contact_email
+- contact_phone
+- logo
+- is_active
+
+---
+
+### Ad Creative
+- name
+- type
+- headline
+- body_copy
+- cta_text
+- cta_url
+- media
+- status
+
+---
+
+### Analytics Event
+- date
+- impressions
+- clicks
+- conversions
+- spend
+- ctr (auto-calculated)
+- conversion_rate (auto-calculated)
+- platform
+
+---
+
+### Tag
+- name
+- color
+
+**Relations:**
+- Many-to-many with Campaign
+
+---
+
+## 🔌 API Endpoints
+
+### Standard CRUD
+
+#### Campaigns
+- GET `/api/campaigns`
+- GET `/api/campaigns/:id`
+- POST `/api/campaigns`
+- PUT `/api/campaigns/:id`
+- DELETE `/api/campaigns/:id`
+
+#### Clients
+- GET `/api/clients`
+- GET `/api/clients/:id`
+- POST `/api/clients`
+- PUT `/api/clients/:id`
+- DELETE `/api/clients/:id`
+
+#### Ad Creatives
+- GET `/api/ad-creatives`
+- GET `/api/ad-creatives/:id`
+- POST `/api/ad-creatives`
+- PUT `/api/ad-creatives/:id`
+- DELETE `/api/ad-creatives/:id`
+
+#### Analytics Events
+- GET `/api/analytics-events`
+- GET `/api/analytics-events/:id`
+- POST `/api/analytics-events`
+- PUT `/api/analytics-events/:id`
+- DELETE `/api/analytics-events/:id`
+
+#### Tags
+- GET `/api/tags`
+- GET `/api/tags/:id`
+- POST `/api/tags`
+- PUT `/api/tags/:id`
+- DELETE `/api/tags/:id`
+
+---
+
+## ⚡ Custom Endpoints
+
+### Active Campaigns
+GET `/api/campaigns/active`
+
+Returns campaigns where:
+start_date ≤ today ≤ end_date
+
+---
+
+### Analytics Summary
+GET `/api/campaigns/:id/analytics-summary`
+
+Returns:
+- CTR
+- conversions
+- spend
+- budget utilization
+
+---
+
+### Duplicate Campaign
+POST `/api/campaigns/:id/duplicate`
+
+- Clones campaign
+- Copies creatives
+- Resets spent_budget and status
+
+---
+
+### Update Status
+PATCH `/api/campaigns/:id/status`
+
+- Enforces valid state transitions
+
+---
+
+## 🧠 Business Logic
+
+### Campaign Hooks
+
+**beforeCreate**
+- status = draft
+- validate end_date > start_date
+- spent_budget = 0
+
+**beforeUpdate**
+- validate dates
+- prevent spent_budget > budget
+
+**afterUpdate**
+- audit log on status change
+- budget warnings
+- trigger webhook
+
+---
+
+### Analytics Hooks
+
+- ctr = clicks / impressions
+- conversion_rate = conversions / clicks
+
+---
+
+### Client Hooks
+
+- email normalized to lowercase
+- is_active = true (default)
+
+---
+
+## 🛡️ Policies & Middleware
+
+### Budget Guard
+Blocks update if:
+spent_budget > budget
+
+---
+
+### Request Logger
+Logs:
+- method
+- URL
+- status
+- response time
+- IP
+
+---
+
+## ⏱️ Cron Jobs
+
+### Nightly Auto Expiry
+
+- Marks campaigns as completed
+- Condition: end_date < today
+
+---
+
+## 🔔 Webhooks
+
+On every campaign status change:
+POST → `CAMPAIGN_WEBHOOK_URL`
+
+---
+
+## 🔐 Roles & Permissions
+
+### Admin
+- Full access
+
+### Campaign Manager
+- Manage campaigns & creatives
+- Read-only analytics
+
+### Analyst
+- Read campaigns
+- Full analytics access
+
+### Client User
+- Read-only campaigns and analytics
+
+---
+
+## 📈 Key Features
+
+- Clean API design
+- Strong business rule enforcement
+- Automated analytics calculations
+- Role-based access control
+- Scalable architecture using Strapi
+
+---
+
+## 🚀 Getting Started
+
+```bash
+npm install
+npm run develop
+
+Server runs on:
+http://localhost:1337
